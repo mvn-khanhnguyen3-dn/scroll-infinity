@@ -1,38 +1,156 @@
-.App {
-  text-align: center;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Ubuntu", sans-serif;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+ul li {
+  list-style: none;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.container {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 10px 50px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.card-list {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.card-item {
+  width: 35%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 20px;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  animation: scroll-down 1.5s ease-in-out;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.card-content {
+  background: rgb(202, 201, 201);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 28%;
+  color: #111;
+  display: flex;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  clip-path: polygon(
+    35% 20%,
+    59% 0,
+    100% 23%,
+    100% 100%,
+    80% 100%,
+    20% 100%,
+    0 100%,
+    0 0
+  );
+  gap: 25px;
+  padding: 10px;
+  width: 100%;
 }
 
-.App-link {
-  color: #61dafb;
+.avatar-bg {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  border-radius: inherit;
 }
 
-@keyframes App-logo-spin {
-  from {
+.avatar-bg::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+}
+
+.bg-color {
+  padding-bottom: 100%;
+}
+
+.bg-color::after {
+  background: linear-gradient(to bottom right, #a1a5a7, #1b2731);
+  mix-blend-mode: multiply;
+}
+
+.sm {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-size: cover;
+}
+
+.clip-path {
+  clip-path: polygon(
+    37% 0,
+    70% 20%,
+    100% 1%,
+    100% 100%,
+    80% 100%,
+    20% 100%,
+    0 100%,
+    0 22%
+  );
+}
+
+.card_name {
+  font-size: 15px;
+}
+
+.card_email {
+  font-size: 13px;
+  font-weight: 400;
+  font-style: italic;
+  padding-top: 3px;
+}
+
+/* loading */
+.loader-container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  overflow: hidden;
+}
+
+.loader {
+  margin: auto;
+  border: 5px dotted #dadada;
+  border-top: 5px solid #3498db;
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% {
     transform: rotate(0deg);
   }
-  to {
+
+  100% {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes scroll-down {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
   }
 }
