@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 
 const Card = ({ item, index }) => {
   useEffect(() => {
-    const item = document.querySelectorAll(".card-content");
+    const items = document.querySelectorAll(".card-content");
     if (index % 2 !== 0) {
-      item[index].classList.add("clip-path");
+      items[index].classList.add("clip-path");
     }
   }, [index]);
 

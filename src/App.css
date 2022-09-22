@@ -55,7 +55,6 @@ ul li {
     0 0
   );
   gap: 25px;
-  padding: 10px;
   width: 100%;
 }
 
@@ -89,7 +88,6 @@ ul li {
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background-size: cover;
 }
 
 .clip-path {

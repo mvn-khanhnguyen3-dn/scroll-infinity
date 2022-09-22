@@ -1,38 +1,31 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Loading from "../../Modules/Loading";
 import Card from "../Card";
 
-const Users = (props) => {
+const Users = ({ data, setData }) => {
   const [loadMore, setLoadMore] = useState(true);
 
   const listRef = useRef(null);
 
-  const { data, setData } = props;
-
   useEffect(() => {
     const getData = async (load) => {
       if (load) {
-        await fetch("https://reqres.in/api/users?page=2")
+        await fetch("https://reqres.in/api/users?page=1")
           .then((response) => response.json())
           .then((results) => setData([...data, ...results.data]))
           .catch((error) => {
             throw error;
+          })
+          .finally(() => {
+            setLoadMore(false);
           });
       }
     };
     getData(loadMore);
-    setLoadMore(false);
   }, [data, loadMore, setData]);
 
   useEffect(() => {
     const listElement = listRef.current;
-
-    const scrollDown = (e) => {
-      const target = e.target;
-      if (target.scrollTop + target.clientHeight === target.scrollHeight) {
-        setLoadMore(true);
-      }
-    };
 
     const scrollDownAutoHeight = () => {
       if (
@@ -43,17 +36,11 @@ const Users = (props) => {
       }
     };
 
-    if (data.scrollable) {
-      listElement.addEventListener("scroll", scrollDown);
-    } else {
-      window.addEventListener("scroll", scrollDownAutoHeight);
-    }
-
+    window.addEventListener("scroll", scrollDownAutoHeight);
     return () => {
-      listElement.removeEventListener("scroll", scrollDown);
       window.removeEventListener("scroll", scrollDownAutoHeight);
     };
-  }, [data]);
+  }, []);
 
   return (
     <ul ref={listRef} className="card-list container">
