@@ -1,18 +1,23 @@
 import { useEffect, useRef, useState } from "react";
-import Loading from "../../Modules/Loading";
 import Card from "../Card";
 
 const Users = ({ data, setData }) => {
   const [loadMore, setLoadMore] = useState(true);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [totalPage, setTotalPage] = useState();
+  const [limit, setLimit] = useState(4);
 
-  const listRef = useRef(null);
+  const containerRef = useRef(null);
 
   useEffect(() => {
     const getData = async (load) => {
       if (load) {
-        await fetch("https://reqres.in/api/users?page=1")
+        await fetch(`https://reqres.in/api/users?page=${pageNumber}`)
           .then((response) => response.json())
-          .then((results) => setData([...data, ...results.data]))
+          .then((results) => {
+            setData([...data, ...results.data]);
+            setTotalPage(results.total_pages);
+          })
           .catch((error) => {
             throw error;
           })
@@ -22,36 +27,37 @@ const Users = ({ data, setData }) => {
       }
     };
     getData(loadMore);
-  }, [data, loadMore, setData]);
+  }, [data, loadMore, setData, pageNumber]);
 
   useEffect(() => {
-    const listElement = listRef.current;
+    const containerElement = containerRef.current;
 
-    const scrollDownAutoHeight = () => {
-      if (
-        window.scrollY + window.innerHeight ===
-        listElement.clientHeight + listElement.offsetTop
-      ) {
+    const scrollDownAutoHeight = (e) => {
+      const el = e.target;
+      if (el.scrollTop + el.clientHeight === el.scrollHeight) {
         setLoadMore(true);
+        pageNumber < totalPage && setPageNumber(pageNumber + 1);
+        setLimit(limit + 4);
+        if (pageNumber === totalPage) {
+          setLoadMore(false);
+        }
       }
     };
 
-    window.addEventListener("scroll", scrollDownAutoHeight);
+    containerElement.addEventListener("scroll", scrollDownAutoHeight);
     return () => {
-      window.removeEventListener("scroll", scrollDownAutoHeight);
+      containerElement.removeEventListener("scroll", scrollDownAutoHeight);
     };
-  }, []);
+  }, [pageNumber, totalPage, limit]);
 
   return (
-    <ul ref={listRef} className="card-list container">
-      {loadMore ? (
-        <Loading />
-      ) : (
-        data.map((item, index) => (
+    <div ref={containerRef} className="container">
+      <ul className="card-list">
+        {data.slice(0, limit).map((item, index) => (
           <Card key={index} item={item} index={index} />
-        ))
-      )}
-    </ul>
+        ))}
+      </ul>
+    </div>
   );
 };
 
