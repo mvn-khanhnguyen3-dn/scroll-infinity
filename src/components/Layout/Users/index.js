@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import Loading from "../../Modules/Loading";
 import Card from "../Card";
 
-let limitNumber = 4;
+let limitNumber = 2;
 const Users = ({ data, setData }) => {
   const [loadMore, setLoadMore] = useState(true);
   const [pageNumber, setPageNumber] = useState(1);
@@ -12,10 +11,15 @@ const Users = ({ data, setData }) => {
   const containerRef = useRef(null);
 
   useEffect(() => {
+    let isCancelled = false;
     const getData = async (load) => {
-      if (load) {
+      if (load && !isCancelled) {
         await fetch(`https://reqres.in/api/users?page=${pageNumber}`)
-          .then((response) => response.json())
+          .then((response) => {
+            return !response.ok
+              ? response.json().then((e) => Promise.reject(e))
+              : response.json();
+          })
           .then((results) => {
             setData([...data, ...results.data]);
             setTotalPage(results.total_pages);
@@ -29,41 +33,41 @@ const Users = ({ data, setData }) => {
       }
     };
     getData(loadMore);
+    return () => {
+      isCancelled = true;
+    };
   }, [data, loadMore, setData, pageNumber]);
 
   useEffect(() => {
     const containerElement = containerRef.current;
 
-    const scrollDownAutoHeight = (e) => {
+    const scrollDownToLoadMore = (e) => {
       const el = e.target;
       if (el.scrollTop + el.clientHeight === el.scrollHeight) {
-        setLoadMore(true);
-        pageNumber < totalPage && setPageNumber(pageNumber + 1);
         setLimit(limit + limitNumber);
+        if (limit === data.length) {
+          pageNumber < totalPage && setPageNumber(pageNumber + 1);
+          setLoadMore(true);
+        }
         if (pageNumber === totalPage) {
           setLoadMore(false);
         }
       }
     };
 
-    containerElement.addEventListener("scroll", scrollDownAutoHeight);
+    containerElement.addEventListener("scroll", scrollDownToLoadMore);
     return () => {
-      containerElement.removeEventListener("scroll", scrollDownAutoHeight);
+      containerElement.removeEventListener("scroll", scrollDownToLoadMore);
     };
-  }, [pageNumber, totalPage, limit]);
+  }, [pageNumber, totalPage, limit, data.length]);
 
   return (
     <div ref={containerRef} className="container">
+      <h3 className="title">Scroll Down To Load More</h3>
       <ul className="card-list">
-        {loadMore ? (
-          <Loading />
-        ) : (
-          data
-            .slice(0, limit)
-            .map((item, index) => (
-              <Card key={index} item={item} index={index} />
-            ))
-        )}
+        {data.slice(0, limit).map((item, index) => (
+          <Card key={index} item={item} index={index} />
+        ))}
       </ul>
     </div>
   );

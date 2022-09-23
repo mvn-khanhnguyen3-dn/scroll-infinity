@@ -2,9 +2,9 @@ import { useEffect } from "react";
 
 const Card = ({ item, index }) => {
   useEffect(() => {
-    const items = document.querySelectorAll(".card-content");
+    const itemContent = document.querySelectorAll(".card-content");
     if (index % 2 !== 0) {
-      items[index].classList.add("clip-path");
+      itemContent[index].classList.add("clip-path");
     }
   }, [index]);
 
