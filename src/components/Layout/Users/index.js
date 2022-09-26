@@ -65,7 +65,7 @@ const Users = ({ data, setData }) => {
     <div ref={containerRef} className="container">
       <h3 className="title">Scroll Down To Load More</h3>
       <ul className="card-list">
-        {data.slice(0, limit).map((item, index) => (
+        {data?.slice(0, limit)?.map((item, index) => (
           <Card key={index} item={item} index={index} />
         ))}
       </ul>
