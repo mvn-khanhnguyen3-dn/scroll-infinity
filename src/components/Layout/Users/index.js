@@ -43,19 +43,21 @@ const Users = ({ data, setData }) => {
 
     const scrollDownToLoadMore = (e) => {
       const el = e.target;
+
       if (el.scrollTop + el.clientHeight === el.scrollHeight) {
         setLimit(limit + limitNumber);
         if (limit === data.length) {
           pageNumber < totalPage && setPageNumber(pageNumber + 1);
           setLoadMore(true);
         }
-        if (pageNumber === totalPage) {
-          setLoadMore(false);
-        }
+
+        limit > data.length && setLimit(data.length);
+
+        pageNumber === totalPage && setLoadMore(false);
       }
     };
-
     containerElement.addEventListener("scroll", scrollDownToLoadMore);
+
     return () => {
       containerElement.removeEventListener("scroll", scrollDownToLoadMore);
     };
